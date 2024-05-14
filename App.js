@@ -1,12 +1,11 @@
 import { Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import TodLists from "./components/TodLists";
 
 const App=()=>{
   const fetchReduxData = useSelector((data)=>console.log(data));
   return(
-    <View>
-      <Text>World</Text>
-    </View>
+    <TodLists />
   )
 }
 export default App;
