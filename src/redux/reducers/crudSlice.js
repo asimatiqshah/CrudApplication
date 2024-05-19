@@ -25,7 +25,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    value : 0
+    value : 0,
+    reduxTodoList : []
 }
 
 const crudSlice = createSlice({
@@ -33,10 +34,25 @@ const crudSlice = createSlice({
     initialState,
     reducers : {
         increment : (state,action)=>{
-            console.log("Action ", action)
+            // console.log("Action1 ", action)
+        },
+        showData : (state,action)=>{
+            const {payload} = action;
+            state.reduxTodoList = [...payload];
+            // console.log(state.todoList)
+        },
+        updateStatus : (state,action)=>{
+            //Updated Object
+            let {payload} = action;
+            //Index number of object
+             const indexVal = state.reduxTodoList.findIndex((item)=> item.id == payload.id );
+             const cloneList = [...state.reduxTodoList];
+             cloneList.splice(indexVal,1,payload);
+             state.reduxTodoList = [...cloneList];
+
         }
     }
 })
 
-export const {increment} = crudSlice.actions;
+export const {increment,showData,updateStatus} = crudSlice.actions;
 export default crudSlice.reducer;

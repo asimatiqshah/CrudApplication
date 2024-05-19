@@ -1,15 +1,58 @@
-import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Button, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CheckBox from 'react-native-check-box'
-
-
-
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { showData, updateStatus } from '../src/redux/reducers/crudSlice';
 const TodLists = () => {
+
+  const dispatch = useDispatch();
+
   const colorList = {
     colorDark: "#7A7777",
     colorWhite: "white"
   }
+
+  const initialData = [
+    {
+      id: 1,
+      task: "Do exercise",
+      date: "6:00",
+      status: false
+    },
+    {
+      id: 2,
+      task: "Buy Vegetables",
+      date: "6:00",
+      status: false
+    },
+    {
+      id: 3,
+      task: "Go To Shopping",
+      date: "6:00",
+      status: true,
+    }
+  ]
+  const [todoList, setTodoList] = useState(initialData);
+
+  const fetchUserData = () => {
+    // dispatch(todoList);
+    todoList && dispatch(showData(todoList));
+  }
+
+  const updateTodoList = (prevdata)=>{
+    // console.log(data);
+    let updatedItem ={
+      ...prevdata,
+      status: !prevdata.status
+    }
+    // sending updated item to redux
+    updatedItem && dispatch(updateStatus(updatedItem));
+  }
+
+  useEffect(() => {
+    fetchUserData();
+  }, [])
+  const fetchReduxData = useSelector(({ crudSlice }) => crudSlice.reduxTodoList);
   return (
     <View style={styles.bodyArea}>
       <View style={styles.topheader}>
@@ -36,37 +79,33 @@ const TodLists = () => {
         </View>
 
         {/* Todo 1 */}
-        <View style={{ backgroundColor: '#201F1F', height: 50, alignItems: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-          <CheckBox
-            leftText={"CheckBox"}
-            isChecked={false}
-            checkBoxColor={colorList.colorDark}
-          />
-          <Text style={{ flex: 2, color: colorList.colorDark, paddingLeft: 10, textDecorationLine: 'line-through', textDecorationStyle: 'solid', fontSize: 20 }}>Do exercise</Text>
-          <Text style={{ justifyContent: 'flex-end', color: colorList.colorDark, fontSize: 15 }}>6.00 am</Text>
-        </View>
 
-        {/* Todo 2 */}
-        <View style={{ backgroundColor: '#201F1F', height: 50, alignItems: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-          <CheckBox
-            leftText={"CheckBox"}
-            isChecked={false}
-            checkBoxColor={colorList.colorDark}
-          />
-          <Text style={{ flex: 2, color: colorList.colorDark, paddingLeft: 10, textDecorationLine: 'line-through', textDecorationStyle: 'solid', fontSize: 20 }}>Buy vegetables</Text>
-          <Text style={{ justifyContent: 'flex-end', color: colorList.colorDark, fontSize: 15 }}>8.00 am</Text>
-        </View>
 
-        {/* Todo 3 */}
-        <View style={{ backgroundColor: '#201F1F', height: 50, alignItems: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-          <CheckBox
-            leftText={"CheckBox"}
-            isChecked={true}
-            checkBoxColor={colorList.colorWhite}
-          />
-          <Text style={{ flex: 2, color: colorList.colorWhite, paddingLeft: 10, textDecorationLine: 'none', textDecorationStyle: 'solid', fontSize: 20 }}>Go to shopping</Text>
-          <Text style={{ justifyContent: 'flex-end', color: colorList.colorWhite, fontSize: 15 }}>8.00 am</Text>
-        </View>
+       {
+        fetchReduxData &&
+        <FlatList
+        data={fetchReduxData}
+        renderItem={({ item }) => {
+          return (
+            <View style={{ backgroundColor: '#201F1F', height: 50, alignItems: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
+              <CheckBox
+                onClick={()=>updateTodoList(item)}
+                leftText={"CheckBox"}
+                isChecked={item.status}
+                checkBoxColor={item.status ? colorList.colorWhite:colorList.colorDark}
+              />
+              <Text style={{ flex: 2, color: item.status ? colorList.colorWhite : colorList.colorDark, paddingLeft: 10, textDecorationLine: item.status ? 'none': 'line-through', textDecorationStyle: 'solid', fontSize: 20 }}>{item.task}</Text>
+              <Text style={{ justifyContent: 'flex-end', color: item.status ? colorList.colorWhite : colorList.colorDark , fontSize: 15 }}>{item.date}</Text>
+            </View>
+
+          )
+        }}
+      />
+       }
+
+
+
+
 
       </View>
       <TouchableOpacity style={styles.circle}>
