@@ -14,7 +14,7 @@ const TodLists = () => {
   }
 
   const initialData = [
-   
+
   ]
   const [todoList, setTodoList] = useState(initialData);
   const [inputVal, setInputVal] = useState("")
@@ -38,12 +38,15 @@ const TodLists = () => {
 
   const addNewHandler = () => {
     const todayDate = new Date();
-    const curTime = `${todayDate.getHours()}:${todayDate.getMinutes()}`;
+    const curTime = `${todayDate.getHours()}:${(todayDate.getMinutes() < 10) ? `0${todayDate.getMinutes()}` : `${todayDate.getMinutes()}`}`;
     let newItem = {
       value: inputVal,
       currentDate: recentDate,
       curTime
     }
+
+
+
 
     inputVal.trim().length > 4 && dispatch(addItemToList(newItem));
     setInputVal("");
@@ -72,13 +75,13 @@ const TodLists = () => {
   }
 
   //List Items Code in UseCallback
-  const renderItem = useCallback(({item}) => {
+  const renderItem = useCallback(({ item }) => {
     return (
       <View style={{ backgroundColor: '#201F1F', height: 50, alignItems: 'flex-start', flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 20, marginTop: 20 }}>
-        <TouchableOpacity onPress={()=>dispatch(deleteItem(item.id))}>
-          <Image 
-          source={require('../src/assets/delete.png')}
-          style={{width:20,height:20,marginRight:10}}
+        <TouchableOpacity onPress={() => dispatch(deleteItem(item.id))}>
+          <Image
+            source={require('../src/assets/delete.png')}
+            style={{ width: 20, height: 20, marginRight: 10 }}
           />
         </TouchableOpacity>
         <CheckBox
@@ -99,7 +102,6 @@ const TodLists = () => {
     currentDate();
   }, [])
   const fetchReduxData = useSelector(({ crudSlice }) => crudSlice.reduxTodoList);
-  console.log(fetchReduxData);
   return (
 
 
@@ -154,28 +156,30 @@ const TodLists = () => {
           />
         </TouchableOpacity>
       </View>
-          
+
       <View style={{ justifyContent: 'center', }}>
         <Modal visible={isModal} transparent>
 
           <TouchableOpacity style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end', alignItems: 'center' }} onPress={() => setIsModal(false)}>
             {/* contentBox */}
-            <View style={{ width: '100%', height: 300, backgroundColor: 'white', borderTopRightRadius: 20, borderTopLeftRadius: 20, alignItems: 'center', paddingTop: 15 }}>
-              <Image
-                source={require('../src/assets/gap.png')}
-                style={{ width: '50%', borderRadius: 250 }}
-              />
-              <Text style={{ color: 'black', fontSize: 25, fontWeight: '700', marginBottom: 20, marginTop: 40 }}>Enter Your New Item</Text>
-              <TextInput
-                value={inputVal}
-                onChangeText={(val) => (setInputVal(val))}
-                style={{ borderColor: 'black', color: 'black', borderWidth: 1, width: "95%", borderRadius: 250, paddingLeft: 20, fontWeight: '600' }} placeholder='Enter Your Item' placeholderTextColor="grey" keyboardType='default' />
-              <TouchableOpacity
-                onPress={addNewHandler}
-                style={{ backgroundColor: 'black', width: '95%', height: 60, borderRadius: 250, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-                <Text style={{ fontSize: 18, color: 'white' }}>SAVE</Text>
-              </TouchableOpacity>
-            </View>
+            <Pressable onPress={() => setIsModal(true)} style={{ width: '100%', height: 300, backgroundColor: 'white', borderTopRightRadius: 20, borderTopLeftRadius: 20, alignItems: 'center', paddingTop: 15 }}>
+
+            <Image
+                  source={require('../src/assets/gap.png')}
+                  style={{ width: '50%', borderRadius: 250 }}
+                />
+                <Text style={{ color: 'black', fontSize: 25, fontWeight: '700', marginBottom: 20, marginTop: 40 }}>Enter Your New Item</Text>
+                <TextInput
+                  value={inputVal}
+                  onChangeText={(val) => (setInputVal(val))}
+                  style={{ borderColor: 'black', color: 'black', borderWidth: 1, width: "95%", borderRadius: 250, paddingLeft: 20, fontWeight: '600' }} placeholder='Enter Your Item' placeholderTextColor="grey" keyboardType='default' />
+                <TouchableOpacity
+                  onPress={addNewHandler}
+                  style={{ backgroundColor: 'black', width: '95%', height: 60, borderRadius: 250, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                  <Text style={{ fontSize: 18, color: 'white' }}>SAVE</Text>
+                </TouchableOpacity>
+  
+            </Pressable>
           </TouchableOpacity>
         </Modal>
       </View>

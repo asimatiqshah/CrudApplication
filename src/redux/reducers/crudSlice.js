@@ -43,7 +43,6 @@ const crudSlice = createSlice({
         },
         addItemToList: (state, action) => {
             const { payload } = action;
-            console.log(payload);
 
             //Generate New ID By Date Function 
             const generateUniqueID = Math.floor(Math.random() * 1000);
